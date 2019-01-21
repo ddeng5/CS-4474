@@ -1,0 +1,61 @@
+<?php
+?>
+
+<script>
+    (function() {
+
+
+
+        var baseMoves = <?= json_encode($this->moves); ?>;
+
+        var currentMoveSet = baseMoves;
+
+        var app = angular.module("openingExplorer", ['ui.router']);
+
+        app.service('MovesService', ['$http', function ($http) {
+            var service = {
+                getMove: function (moveUrl) {
+                    return $http.get('/getMove/' + encodeURIComponent($stateProvider.moveUrl)).then(function (data) {
+                        return data.data.moves;
+                    });
+                }
+            };
+            return service;
+        }]);
+
+        app.config(function ($stateProvider, $urlRouterProvider) {
+            $urlRouterProvider.otherwise("/");
+            $stateProvider.state({
+                name: "home",
+                url: "/{moveUrl}",
+                templateUrl: "/moves.html",
+                controller: ['$scope', '$http', '$stateParams', function ($scope, $http, $stateParams) {
+                    if($stateParams.moveUrl === "") {
+                        $scope.moves = baseMoves;
+                    }
+                    else
+                    {
+                        $scope.loading = true;
+                        $http.get('/getMove/' + $stateParams.moveUrl).then(function (data) {
+                            $scope.moves = data.data.moves;
+                            $scope.loading = false;
+                        }, function () {
+                            $scope.error = true;
+                            $scope.loading = false;
+                        });
+                    }
+
+                    $scope.loading = false;
+                    $scope.error = false;
+                }]
+            });
+
+        });
+    })();
+</script>
+
+<div ng-app="openingExplorer">
+
+    <ui-view></ui-view>
+
+</div>

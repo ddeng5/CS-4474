@@ -1,0 +1,27 @@
+<div>
+
+    <div>
+
+        <ui-view>
+
+            <div ng-show="!loading && !error">
+                <p ng-show="moves.cached">Moves were in cache</p>
+                <p ng-show="!moves.cached">Moves were not in cache</p>
+                <div ng-repeat="move in moves.moves"
+                     style="background: #cccccc; margin-bottom: 20px; border-bottom: 2px solid #000000; width: 150px;">
+                    <p><a href="#/{{move.url}}">{{move.move}}</a></p>
+                    <p>White wins: {{move.whiteOdds}}</p>
+                    <p>Black wins: {{move.blackOdds}}</p>
+                    <p>Draws: {{move.drawOdds}}</p>
+                    <p></p>
+                </div>
+            </div>
+            <div ng-show="error">
+                <p>Errored!!</p>
+            </div>
+            <div ng-show="loading"><img src="/img/ajax-loader.gif"></div>
+
+        </ui-view>
+    </div>
+
+</div>
